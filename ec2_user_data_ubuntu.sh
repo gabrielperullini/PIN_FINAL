@@ -5,7 +5,7 @@ sudo apt-get update
 sudo apt-get install -y awscli
 
 echo "Installing kubectl"
-curl -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.26.2/2023-03-17/bin/linux/amd64/kubectl
+curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.23.6/bin/linux/amd64/kubectl
 chmod +x ./kubectl
 sudo mv ./kubectl /usr/local/bin/kubectl
 kubectl version --client
@@ -16,17 +16,19 @@ curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/d
 sudo mv /tmp/eksctl /usr/local/bin
 eksctl version
 
-echo "Installing docker"
-sudo apt-get install -y docker.io
-sudo usermod -aG docker $USER
-newgrp docker
-sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
-sudo systemctl enable docker.service
-sudo systemctl start docker.service
 
 echo "Installing Helm"
-sudo snap install helm --classic
+HELM_VERSION="v3.8.0"
+
+# Download Helm
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+# Make the script executable
+chmod +x get_helm.sh
+# Install Helm with the specific version
+./get_helm.sh --version $HELM_VERSION
+# Clean up the downloaded script
+rm get_helm.sh
+
 
 echo "Installing terraform"
 sudo apt-get install -y software-properties-common
